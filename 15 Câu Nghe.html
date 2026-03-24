@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>15 Câu Nghe - Ôn Tập</title>
+    
+    <style>
+        /* CORE NATIVE CSS - CHẠY 100% OFFLINE */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --text-mut: #64748b; --border: #e2e8f0;
+            --primary: #2563eb; --primary-hover: #1e40af;
+            --success-bg: #ecfdf5; --success-border: #10b981; --success-text: #059669;
+            --danger-bg: #fef2f2; --danger-border: #ef4444; --danger-text: #e11d48;
+        }
+
+        /* KHẮC PHỤC HIỆN TƯỢNG BÔI ĐEN KHI CLICK CHUỘT: Thêm user-select: none */
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-user-select: none; -moz-user-select: none; user-select: none; }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+
+        /* Layouts */
+        header { background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+        .header-inner { max-width: 800px; margin: 0 auto; padding: 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .header-inner h1 { font-size: 18px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* Header Actions & Icons */
+        .header-actions { display: flex; gap: 8px; align-items: center; }
+        .icon-btn { width: 38px; height: 38px; border-radius: 10px; border: 2px solid var(--border); background: var(--card); font-size: 16px; cursor: pointer; transition: all 0.2s; display: flex; justify-content: center; align-items: center; color: var(--text-mut); padding: 0; outline: none; }
+        .icon-btn:hover { background: #f1f5f9; color: var(--text); }
+        .icon-btn.active { border-color: var(--primary); background: #eff6ff; color: var(--primary); }
+
+        .progress-bar { height: 6px; background: #f1f5f9; width: 100%; }
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s ease; }
+
+        main { flex-grow: 1; width: 100%; max-width: 800px; margin: 0 auto; padding: 24px 16px; display: flex; flex-direction: column; align-items: center; padding-bottom: 120px; }
+        .stats { width: 100%; display: flex; justify-content: space-between; margin-bottom: 24px; font-size: 14px; font-weight: 600; color: var(--text-mut); align-items: center; }
+        .badge-mastered { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 4px 12px; border-radius: 99px; }
+
+        /* Questions */
+        .quiz-card { width: 100%; background: var(--card); border-radius: 24px; border: 1px solid var(--border); padding: 32px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 24px; }
+        .q-type { display: inline-block; background: #e0e7ff; color: #4338ca; font-size: 12px; font-weight: bold; padding: 6px 10px; border-radius: 6px; margin-bottom: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .q-content { font-size: 20px; font-weight: 600; line-height: 1.6; margin-bottom: 24px; white-space: pre-wrap; word-break: break-word; }
+        
+        /* CẤU HÌNH HÌNH ẢNH: Khắc phục triệt để viền trắng, độ nét và lỗi ảnh trắng */
+        .quiz-card img {
+            max-width: 100%;
+            height: auto !important;
+            vertical-align: middle;
+            display: inline-block;
+            border: none !important;
+            box-shadow: none !important;
+            outline: none !important;
+            background: transparent !important;
+            mix-blend-mode: multiply; /* Xóa nền trắng của công thức */
+            image-rendering: crisp-edges; /* Tăng độ sắc nét */
+            image-rendering: -webkit-optimize-contrast;
+            margin: 0 2px;
+        }
+        
+        /* Toggle Content Button for TF */
+        .btn-toggle-content { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; color: var(--text-mut); cursor: pointer; display: flex; align-items: center; justify-content: center; width: 100%; margin-bottom: 16px; transition: 0.2s; }
+        .btn-toggle-content:hover { background: #e2e8f0; color: var(--text); }
+
+        /* Options Single */
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .opt-btn { width: 100%; text-align: left; padding: 16px; background: var(--card); border: 2px solid var(--border); border-radius: 16px; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; transition: all 0.2s; outline: none; }
+        .opt-btn:hover:not(:disabled) { background: #eff6ff; border-color: #bfdbfe; }
+        .opt-label { flex-shrink: 0; width: 32px; height: 32px; background: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--text-mut); margin-top: 2px; line-height:32px; text-align:center; }
+        .opt-text { font-size: 16px; font-weight: 500; line-height: 1.5; padding-top: 6px; white-space: pre-wrap; word-break: break-word; }
+
+        /* Options TF Compact */
+        .tf-compact { display: flex; flex-direction: column; gap: 10px; }
+        .tf-row-c { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--card); border: 2px solid var(--border); border-radius: 16px; gap: 12px; transition: all 0.2s; }
+        .tf-text-c { flex-grow: 1; font-size: 16px; font-weight: 500; display:flex; align-items: flex-start; gap: 10px; }
+        .tf-text-c .opt-label { width: 28px; height: 28px; line-height: 28px; font-size: 14px; flex-shrink:0; }
+        .tf-text-content { padding-top: 3px; }
+        .tf-actions-c { display: flex; gap: 6px; flex-shrink: 0; }
+        .tf-btn-c { width: 44px; height: 40px; border-radius: 10px; border: 2px solid var(--border); background: #f8fafc; font-weight: 700; cursor: pointer; color: var(--text-mut); transition: 0.2s; font-size: 14px; }
+        .tf-btn-c:hover:not(:disabled) { background: #e2e8f0; }
+        
+        /* Selection States for Both Modes */
+        .opt-selected { background: #eff6ff !important; border-color: var(--primary) !important; }
+        .opt-selected .opt-label { background: var(--primary) !important; color: white !important; }
+        
+        .tf-btn-c.selected-t { background: var(--primary); color: white; border-color: var(--primary); }
+        .tf-btn-c.selected-f { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* Evaluation States */
+        .focused-item { outline: 3px solid var(--primary) !important; transform: scale(1.02); box-shadow: 0 10px 20px rgba(0,0,0,0.1); z-index: 10; position: relative; }
+        .opt-correct { background: var(--success-bg) !important; border-color: var(--success-border) !important; }
+        .opt-correct .opt-label { background: var(--success-border) !important; color: white !important; }
+        .opt-correct .opt-text { color: var(--success-text) !important; font-weight: 600; }
+        .opt-wrong { background: var(--danger-bg) !important; border-color: var(--danger-border) !important; opacity: 0.9; }
+        .opt-wrong .opt-label { background: var(--danger-border) !important; color: white !important; }
+        .opt-wrong .opt-text { color: var(--danger-text) !important; text-decoration: line-through; }
+        
+        .tf-row-c.wrong .tf-text-content { color: var(--danger-text); text-decoration: line-through; }
+        .tf-row-c.wrong { background: var(--danger-bg); border-color: var(--danger-border); opacity: 0.9; }
+        .tf-row-c.correct { background: var(--success-bg); border-color: var(--success-border); }
+        .tf-row-c.correct .tf-text-content { color: var(--success-text); font-weight: 600; }
+        .tf-btn-c.correct-ans { background: var(--success-border) !important; color: white !important; border-color: var(--success-border) !important; }
+        .tf-btn-c.wrong-ans { background: var(--danger-border) !important; color: white !important; border-color: var(--danger-border) !important; }
+
+        .opt-disabled, .tf-btn-c:disabled { pointer-events: none; cursor: default; }
+
+        /* Action Panel */
+        .action-panel { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--border); padding: 16px; box-shadow: 0 -10px 40px rgba(0,0,0,0.05); transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 20; }
+        .action-panel.show { transform: translateY(0); }
+        .action-inner { max-width: 800px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+        .feedback { font-weight: 700; font-size: 18px; display: flex; align-items: center; gap: 10px; }
+        .fb-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .feedback.success { color: var(--success-text); }
+        .feedback.success .fb-icon { background: #d1fae5; }
+        .feedback.error { color: var(--danger-text); }
+        .feedback.error .fb-icon { background: #fee2e2; }
+        .feedback.neutral { color: var(--primary); }
+        .feedback.neutral .fb-icon { background: #dbeafe; }
+        .btn-next { background: var(--text); color: white; border: none; padding: 14px 32px; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 8px; }
+        .btn-next:hover { background: #000; }
+        .hidden { display: none !important; }
+
+        /* Victory */
+        .victory { width: 100%; text-align: center; padding: 48px 24px; background: var(--card); border-radius: 24px; border: 1px solid #a7f3d0; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .victory-icon { font-size: 64px; margin-bottom: 16px; }
+        .victory h2 { font-size: 24px; margin-bottom: 8px; color: var(--text); font-weight: 700; }
+        .victory p { color: var(--text-mut); font-size: 16px; }
+        .btn-restart { background: var(--primary); color: white; border: none; padding: 16px 32px; border-radius: 14px; font-weight: 700; font-size: 16px; cursor: pointer; transition: background 0.2s; }
+        .btn-restart:hover { background: var(--primary-hover); }
+
+        .fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* iOS Warning */
+        .ios-warning { margin-bottom: 24px; padding: 20px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 16px; color: #92400e; font-size: 15px; line-height: 1.6; text-align: left; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .ios-warning h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #b45309; display: flex; align-items: center; gap: 8px; }
+
+        /* FULLSCREEN TỐI GIẢN (MAXIMIZE SPACE) */
+        body.is-fullscreen header { position: fixed; top: 16px; right: 16px; background: transparent; border: none; width: auto; z-index: 100; box-shadow: none; }
+        body.is-fullscreen .header-inner { padding: 0; }
+        body.is-fullscreen .header-inner h1, 
+        body.is-fullscreen #btnMouse,
+        body.is-fullscreen #btnTestMode,
+        body.is-fullscreen #btnReset,
+        body.is-fullscreen .progress-bar { display: none !important; }
+        body.is-fullscreen .stats, 
+        body.is-fullscreen #iosWarning { display: none !important; }
+        body.is-fullscreen main { padding-top: 60px; justify-content: center; }
+        body.is-fullscreen #btnFs { background: var(--card); border: 1px solid var(--border); box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-radius: 50%; width: 44px; height: 44px; font-size: 20px; color: var(--text-mut); }
+
+        /* BẢN VÁ: TỐI ƯU MOBILE HEADER THÔNG MINH */
+        @media (max-width: 600px) {
+            .header-inner { flex-direction: row; gap: 10px; align-items: center; padding: 12px 16px; }
+            .header-inner h1 { text-align: left; font-size: 16px; margin-bottom: 0; max-width: 50%; }
+            .header-actions { gap: 6px; }
+            .icon-btn { width: 36px; height: 36px; font-size: 14px; }
+            .quiz-card { padding: 20px; border-radius: 16px; }
+            .action-inner { flex-direction: column; text-align: center; }
+            .btn-next { width: 100%; justify-content: center; }
+            .tf-row-c { flex-direction: column; align-items: stretch; }
+            .tf-actions-c { justify-content: flex-end; margin-top: 10px; }
+            .tf-btn-c { flex: 1; }
+        }
+    </style>
+    <script>
+        // Random Colors Generator
+        const palettes = [
+            {p: '#2563eb', hover: '#1e40af', bg: '#eff6ff'}, // Blue
+            {p: '#059669', hover: '#047857', bg: '#ecfdf5'}, // Emerald
+            {p: '#7c3aed', hover: '#6d28d9', bg: '#f5f3ff'}, // Violet
+            {p: '#db2777', hover: '#be185d', bg: '#fdf2f8'}, // Pink
+            {p: '#ea580c', hover: '#c2410c', bg: '#fff7ed'}, // Orange
+            {p: '#0d9488', hover: '#0f766e', bg: '#f0fdfa'}  // Teal
+        ];
+        const randPal = palettes[Math.floor(Math.random() * palettes.length)];
+        document.documentElement.style.setProperty('--primary', randPal.p);
+        document.documentElement.style.setProperty('--primary-hover', randPal.hover);
+        document.documentElement.style.setProperty('--bg', randPal.bg);
+    </script>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <h1>15 Câu Nghe</h1>
+            <div class="header-actions">
+                <button id="btnMouse" class="icon-btn active" onclick="toggleMouseControl()" title="Bật/Tắt điều khiển chuột">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><path d="M13 13l6 6"/></svg>
+                </button>
+                <button id="btnTestMode" class="icon-btn" onclick="toggleMode()" title="Bật/Tắt thi thử">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                </button>
+                <button id="btnReset" class="icon-btn" onclick="resetData()" title="Làm lại từ đầu">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                </button>
+                <button id="btnFs" class="icon-btn" onclick="toggleFS()" title="Toàn màn hình">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                </button>
+            </div>
+        </div>
+        <div class="progress-bar">
+            <div id="progressBar" class="progress-fill"></div>
+        </div>
+    </header>
+
+    <main>
+        <!-- CẢNH BÁO NẾU BỊ CHẶN JAVASCRIPT BỞI IOS QUICKLOOK -->
+        <div id="iosWarning" class="ios-warning">
+            <h3>⚠️ Tính năng bảo mật của iPhone đang chặn ứng dụng</h3>
+            <p>Trình xem trước mặc định của ứng dụng Tệp (Files) hoặc Zalo/Messenger không hỗ trợ chạy tính năng tương tác.</p>
+            <p style="margin-top: 10px; font-weight: 600;">👉 Cách khắc phục:</p>
+            <ol style="margin-left: 20px; margin-top: 5px;">
+                <li>Bấm vào nút <b>Chia sẻ</b> (biểu tượng mũi tên hướng lên).</li>
+                <li>Chọn <b>Mở bằng Safari</b> (Open in Safari) hoặc Chrome.</li>
+            </ol>
+        </div>
+
+        <div class="stats" id="quizStats" style="display: none;">
+            <div>Câu <span id="currentIdxDisplay" style="color:var(--text)">0</span> / <span id="queueTotalDisplay">0</span></div>
+            <div class="badge-mastered">Đã thuộc: <span id="masteredDisplay">0</span> / <span id="totalQuestionsDisplay">0</span></div>
+        </div>
+
+        <div id="quizContainer" class="fade-in"></div>
+
+        <div id="victoryScreen" class="victory hidden">
+            <div class="victory-icon">🏆</div>
+            <h2>Hoàn thành xuất sắc!</h2>
+            <p style="margin-bottom: 16px;">Bạn đã ghi nhớ toàn bộ nội dung của bộ câu hỏi này.</p>
+            
+            <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 16px; padding: 20px; margin: 0 auto 32px auto; max-width: 450px; text-align: center;">
+                <div style="font-size: 14px; color: var(--text-mut); font-weight: 600; margin-bottom: 8px;">⏳ Lần ôn tập tiếp theo (Thuật toán SM-2):</div>
+                <div id="nextReviewTime" style="font-size: 18px; font-weight: 700; color: var(--primary);">Đang tính toán...</div>
+            </div>
+
+            <button onclick="resetData()" class="btn-restart">Học lại lần nữa</button>
+        </div>
+    </main>
+
+    <div id="actionPanel" class="action-panel">
+        <div class="action-inner">
+            <div id="feedbackText" class="feedback"></div>
+            <button id="nextBtn" onclick="goNext()" class="btn-next hidden">Tiếp tục (Chuột Phải / Enter) ➔</button>
+        </div>
+    </div>
+
+    <script>
+        const svgMax = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>';
+        const svgMin = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>';
+
+        // Xóa cảnh báo iOS nếu JavaScript chạy được bình thường
+        document.getElementById('iosWarning').style.display = 'none';
+        document.getElementById('quizStats').style.display = 'flex';
+
+        function safeDecodeBase64(base64Str) {
+            try {
+                const binaryStr = atob(base64Str);
+                const bytes = new Uint8Array(binaryStr.length);
+                for (let i = 0; i < binaryStr.length; i++) {
+                    bytes[i] = binaryStr.charCodeAt(i);
+                }
+                return JSON.parse(new TextDecoder().decode(bytes));
+            } catch(e) { return []; }
+        }
+
+        const QUESTIONS = safeDecodeBase64("W3siaWQiOiJ3cHJrd3JrNHoiLCJ0eXBlIjoic2luZ2xlIiwiY29udGVudEhUTUwiOiJBbGx5IOKAkyBhIGhvbWUgcm9ib3QtIGlzIHRoZSBtb3N0IGFkdmFuY2VkIHJvYm90IHVzaW5nIEFJIGF0IHRoZSBOZXcgVGVjaCBDZW50cmUuIiwib3B0aW9ucyI6W3siaWQiOiJjYjljZjY2MDEiLCJsYWJlbCI6IkEiLCJ0ZXh0IjoiVHJ1ZSIsImlzVHJ1ZSI6dHJ1ZX0seyJpZCI6IjIweGx1NmFobSIsImxhYmVsIjoiQiIsInRleHQiOiJGYWxzZSIsImlzVHJ1ZSI6ZmFsc2V9XSwiY29ycmVjdEluZGV4IjowfSx7ImlkIjoiZnNieHI1aDd4IiwidHlwZSI6InNpbmdsZSIsImNvbnRlbnRIVE1MIjoiQWxseSBkb2VzbuKAmXQgcnVuIG9uIHNvbGFyIGVuZXJneS0gaXQgcnVucyBvbiBiYXR0ZXJpZXMuIiwib3B0aW9ucyI6W3siaWQiOiJ2djIxYTIwaDMiLCJsYWJlbCI6IkEiLCJ0ZXh0IjoiVHJ1ZSIsImlzVHJ1ZSI6ZmFsc2V9LHsiaWQiOiJkbXFqdHc5MXkiLCJsYWJlbCI6IkIiLCJ0ZXh0IjoiRmFsc2UiLCJpc1RydWUiOnRydWV9XSwiY29ycmVjdEluZGV4IjoxfSx7ImlkIjoiZXl1NWdwdXdiIiwidHlwZSI6InNpbmdsZSIsImNvbnRlbnRIVE1MIjoiVG8gb3BlcmF0ZSBBbGx5LCB0aGUgZmlyc3Qgc3RlcCBpcyBkb3dubG9hZGluZyB0aGUgQWxseSBjb25uZWN0IGFwcC4iLCJvcHRpb25zIjpbeyJpZCI6Impqb2xwM2FqZiIsImxhYmVsIjoiQSIsInRleHQiOiJUcnVlIiwiaXNUcnVlIjp0cnVlfSx7ImlkIjoidmJpMWNxMXBsIiwibGFiZWwiOiJCIiwidGV4dCI6IkZhbHNlIiwiaXNUcnVlIjpmYWxzZX1dLCJjb3JyZWN0SW5kZXgiOjB9LHsiaWQiOiJ1d3Nsamh4eTEiLCJ0eXBlIjoic2luZ2xlIiwiY29udGVudEhUTUwiOiJOZXh0LCBsb2cgaW4gdGhlIGFwcCB1c2luZyB0aGUgc2VyaWFsIG51bWJlcnMgYXQgdGhlIGZyb250IG9mIEFsbHnigJlzIGhlYWQuIiwib3B0aW9ucyI6W3siaWQiOiJwNHczazdkcGciLCJsYWJlbCI6IkEiLCJ0ZXh0IjoiVHJ1ZSIsImlzVHJ1ZSI6ZmFsc2V9LHsiaWQiOiJyNnJwNGtseHIiLCJsYWJlbCI6IkIiLCJ0ZXh0IjoiRmFsc2UiLCJpc1RydWUiOnRydWV9XSwiY29ycmVjdEluZGV4IjoxfSx7ImlkIjoidHF6N2Zqd2lxIiwidHlwZSI6InNpbmdsZSIsImNvbnRlbnRIVE1MIjoiVGhlbiwgcHJlc3MgdGhlIFN0YXJ0IGJ1dHRvbiBhbmQgY2hvb3NlIGEgZnVuY3Rpb24uIFdoZW4gQWxseSBmaW5pc2hlcyBpdHMgdGFzaywgeW91IGp1c3Qgb3BlbiB0aGUgYXBwLCBjaG9vc2UgU3RhbmRieSBtb2RlLiIsIm9wdGlvbnMiOlt7ImlkIjoiOTVhc203aXcyIiwibGFiZWwiOiJBIiwidGV4dCI6IlRydWUiLCJpc1RydWUiOnRydWV9LHsiaWQiOiJjZ2ZmdmNxeGgiLCJsYWJlbCI6IkIiLCJ0ZXh0IjoiRmFsc2UiLCJpc1RydWUiOmZhbHNlfV0sImNvcnJlY3RJbmRleCI6MH0seyJpZCI6IjRqenF2bHpkeCIsInR5cGUiOiJzaW5nbGUiLCJjb250ZW50SFRNTCI6IkhvdyBtYW55IHBlb3BsZSBpbiBWaWV0bmFtIHVzZWQgdGhlIEludGVybmV0IGluIDIwMjI/Iiwib3B0aW9ucyI6W3siaWQiOiJranhtazloaTMiLCJsYWJlbCI6IkEiLCJ0ZXh0Ijoib3ZlciA3MiBiaWxsaW9uIiwiaXNUcnVlIjpmYWxzZX0seyJpZCI6Imhjdm5nZWtidSIsImxhYmVsIjoiQiIsInRleHQiOiJvdmVyIDcyIG1pbGxpb24iLCJpc1RydWUiOnRydWV9LHsiaWQiOiI0M3F3eGtoMXYiLCJsYWJlbCI6IkMiLCJ0ZXh0IjoidW5kZXIgNzIgbWlsbGlvbiIsImlzVHJ1ZSI6ZmFsc2V9LHsiaWQiOiJmazFjeXM2amwiLCJsYWJlbCI6IkQiLCJ0ZXh0IjoidW5kZXIgNzUgYmlsbGlvbiIsImlzVHJ1ZSI6ZmFsc2V9XSwiY29ycmVjdEluZGV4IjoxfSx7ImlkIjoicHh2aHR6MjhiIiwidHlwZSI6InNpbmdsZSIsImNvbnRlbnRIVE1MIjoiQWNjb3JkaW5nIHRvIE1haSwgd2hhdCBpcyB0aGUgcmVhc29uIGZvciBmYWtlIG5ld3Mgb24gdGhlIEludGVybmV0PyIsIm9wdGlvbnMiOlt7ImlkIjoid3lkZXQ1c3pjIiwibGFiZWwiOiJBIiwidGV4dCI6IlRoaXMgY2FuIGJlIGhhcm1mdWwgdG8geW91bmcgcGVvcGxlLiIsImlzVHJ1ZSI6ZmFsc2V9LHsiaWQiOiI3ZGZ2anFtdXoiLCJsYWJlbCI6IkIiLCJ0ZXh0IjoiVGhlIEludGVybmV0IGlzIGdldHRpbmcgbW9yZSBhbmQgbW9yZSBwb3B1bGFyLiIsImlzVHJ1ZSI6ZmFsc2V9LHsiaWQiOiJqaTd1aTJ3ejYiLCJsYWJlbCI6IkMiLCJ0ZXh0IjoiSXQgaXMgZWFzeSB0byBwb3N0IGFueSBpbmZvcm1hdGlvbiBvbiB0aGUgSW50ZXJuZXQuIiwiaXNUcnVlIjp0cnVlfSx7ImlkIjoiZnQzc25rNjdtIiwibGFiZWwiOiJEIiwidGV4dCI6IldlIGNhbuKAmXQgc3RvcCB0aGUgc3ByZWFkIG9mIGZha2UgbmV3cyIsImlzVHJ1ZSI6ZmFsc2V9XSwiY29ycmVjdEluZGV4IjoyfSx7ImlkIjoiaG9qaWJpbjVvIiwidHlwZSI6InNpbmdsZSIsImNvbnRlbnRIVE1MIjoiSG93IGRvZXMgTWFpIGZlZWwgYWJvdXQgZmFrZSBuZXdzIG9uIHRoZSBJbnRlcm5ldD8iLCJvcHRpb25zIjpbeyJpZCI6ImJ0YXZvZ2xrNiIsImxhYmVsIjoiQSIsInRleHQiOiJTaGUgaXMgYW5ub3llZC4iLCJpc1RydWUiOmZhbHNlfSx7ImlkIjoidGQ3dnh6dmpuIiwibGFiZWwiOiJCIiwidGV4dCI6IlNoZSBpcyBub3Qgd29ycmllZC4iLCJpc1RydWUiOmZhbHNlfSx7ImlkIjoiYzE3OTZnMGwyIiwibGFiZWwiOiJDIiwidGV4dCI6IlNoZSBkb2Vzbid0IGNhcmUuIiwiaXNUcnVlIjpmYWxzZX0seyJpZCI6IngxemZ5dHRnbiIsImxhYmVsIjoiRCIsInRleHQiOiJTaGUgaXMgd29ycmllZC4iLCJpc1RydWUiOnRydWV9XSwiY29ycmVjdEluZGV4IjozfSx7ImlkIjoiZXYxdWNoYmdiIiwidHlwZSI6InNpbmdsZSIsImNvbnRlbnRIVE1MIjoiV2hhdCBpcyBOYW3igJlzIGF0dGl0dWRlIHRvIGZha2UgbmV3cyBvbiB0aGUgSW50ZXJuZXQ/Iiwib3B0aW9ucyI6W3siaWQiOiJjaW02aXIwdmsiLCJsYWJlbCI6IkEiLCJ0ZXh0IjoiSGUgaXMgd29ycmllZCBhYm91dCBmYWtlIG5ld3MuIiwiaXNUcnVlIjpmYWxzZX0seyJpZCI6InRxeDNsNm56NCIsImxhYmVsIjoiQiIsInRleHQiOiJIZSBpcyBhc2hhbWVkIG9mIHNwcmVhZGluZyBmYWtlIG5ld3MuIiwiaXNUcnVlIjp0cnVlfSx7ImlkIjoiZnQxZGs4cDZ2IiwibGFiZWwiOiJDIiwidGV4dCI6IkhlIGlzIGFubm95ZWQgYnkgZmFrZSBuZXdzLiIsImlzVHJ1ZSI6ZmFsc2V9LHsiaWQiOiJsNXAya202ZDgiLCJsYWJlbCI6IkQiLCJ0ZXh0IjoiSGUgZG9lc24ndCBjYXJlIGlmIGl0IGlzIGZha2UgbmV3cy4iLCJpc1RydWUiOmZhbHNlfV0sImNvcnJlY3RJbmRleCI6MX0seyJpZCI6Ijl6YjBwcmhqOSIsInR5cGUiOiJzaW5nbGUiLCJjb250ZW50SFRNTCI6IkhvdyBtYW55IHRpcHMgdG8gYXZvaWQgZmFrZSBvbmxpbmUgbmV3cyBkb2VzIE1hcmsgbWVudGlvbj8iLCJvcHRpb25zIjpbeyJpZCI6IjBheG81N2w2YyIsImxhYmVsIjoiQSIsInRleHQiOiIxIiwiaXNUcnVlIjpmYWxzZX0seyJpZCI6InhjcTUycGN1byIsImxhYmVsIjoiQiIsInRleHQiOiIyIiwiaXNUcnVlIjpmYWxzZX0seyJpZCI6ImwwcHFsajJmbSIsImxhYmVsIjoiQyIsInRleHQiOiIzIiwiaXNUcnVlIjp0cnVlfSx7ImlkIjoiZHYxajB4c2wyIiwibGFiZWwiOiJEIiwidGV4dCI6IjQiLCJpc1RydWUiOmZhbHNlfV0sImNvcnJlY3RJbmRleCI6Mn0seyJpZCI6ImtxemQyYm8zcyIsInR5cGUiOiJzaW5nbGUiLCJjb250ZW50SFRNTCI6Ik92ZXIgdGhlIGxhc3QgMTAwIHllYXJzLCBhY2NvcmRpbmcgdG8gdGhlIHNwZWFrZXIsIGhvdyBoYXMgdGhlIHdvcmxkJ3Mgd2lsZCB0aWdlciBwb3B1bGF0aW9uIGRlY2xpbmVkPyIsIm9wdGlvbnMiOlt7ImlkIjoia3N2eGx3eDZyIiwibGFiZWwiOiJBIiwidGV4dCI6ImdyYWR1YWxseSIsImlzVHJ1ZSI6ZmFsc2V9LHsiaWQiOiJ4MTE5OXRndGUiLCJsYWJlbCI6IkIiLCJ0ZXh0Ijoic2lnbmlmaWNhbnRseSIsImlzVHJ1ZSI6dHJ1ZX0seyJpZCI6ImxsNGppZ2ptZCIsImxhYmVsIjoiQyIsInRleHQiOiJzdGVhZGlseSIsImlzVHJ1ZSI6ZmFsc2V9LHsiaWQiOiJjdmd4ODR5NGYiLCJsYWJlbCI6IkQiLCJ0ZXh0IjoicmFwaWRseSIsImlzVHJ1ZSI6ZmFsc2V9XSwiY29ycmVjdEluZGV4IjoxfSx7ImlkIjoiY2lmbTJzYWh1IiwidHlwZSI6InNpbmdsZSIsImNvbnRlbnRIVE1MIjoiSG93IG1hbnkgd2lsZCB0aWdlcnMgd2VyZSB0aGVyZSBsZWZ0IGFyb3VuZCB0aGUgd29ybGQgaW4gMjAyMz8iLCJvcHRpb25zIjpbeyJpZCI6InA5cG5nNjlzMCIsImxhYmVsIjoiQSIsInRleHQiOiI0NSIsImlzVHJ1ZSI6ZmFsc2V9LHsiaWQiOiJmOW5qcjQ1NjAiLCJsYWJlbCI6IkIiLCJ0ZXh0IjoiNDUwIiwiaXNUcnVlIjpmYWxzZX0seyJpZCI6InR5Z29zajIxZyIsImxhYmVsIjoiQyIsInRleHQiOiI0LDUwMCIsImlzVHJ1ZSI6dHJ1ZX0seyJpZCI6ImlhY3NzMmV4bCIsImxhYmVsIjoiRCIsInRleHQiOiI0NTAsMDAwIiwiaXNUcnVlIjpmYWxzZX1dLCJjb3JyZWN0SW5kZXgiOjJ9LHsiaWQiOiJ2eGdrbTg2Z3AiLCJ0eXBlIjoic2luZ2xlIiwiY29udGVudEhUTUwiOiJBcyB0aGVpciBoYWJpdGF0cyBiZWNvbWUgc21hbGxlciwgdGlnZXJzIF9fX19fLiIsIm9wdGlvbnMiOlt7ImlkIjoiNWU3MmJ2ZWFyIiwibGFiZWwiOiJBIiwidGV4dCI6ImF0dGFjayBmYXJtIGFuaW1hbHMiLCJpc1RydWUiOnRydWV9LHsiaWQiOiJ1Y3U1MWgycHMiLCJsYWJlbCI6IkIiLCJ0ZXh0IjoiZW50ZXIgZmFybWVycycgaG91c2VzIiwiaXNUcnVlIjpmYWxzZX0seyJpZCI6InNzNDV3YzV1eiIsImxhYmVsIjoiQyIsInRleHQiOiJsb29rIGZvciBmb29kIGluIGZvcmVzdHMiLCJpc1RydWUiOmZhbHNlfSx7ImlkIjoicHNseWl6c3hvIiwibGFiZWwiOiJEIiwidGV4dCI6ImFyZSB1c2VkIHRvIG1ha2UgdHJhZGl0aW9uYWwgbWVkaWNpbmVzIiwiaXNUcnVlIjpmYWxzZX1dLCJjb3JyZWN0SW5kZXgiOjB9LHsiaWQiOiJ2cG16Z2R0amciLCJ0eXBlIjoic2luZ2xlIiwiY29udGVudEhUTUwiOiJXaGF0IGFyZSB0aHJlYXRzIGZhY2luZyB0aWdlcnMgPHN0cm9uZz5OT1QgbWVudGlvbmVkPC9zdHJvbmc+IGluIHRoZSB0YWxrPyIsIm9wdGlvbnMiOlt7ImlkIjoianRxZXVzdTRiIiwibGFiZWwiOiJBIiwidGV4dCI6IkhhYml0YXQgbG9zcyBkdWUgdG8gZm9yZXN0IGNsZWFyYW5jZSBmb3IgYWdyaWN1bHR1cmUgYW5kIHdvb2QiLCJpc1RydWUiOmZhbHNlfSx7ImlkIjoieW8zZWFxM2g5IiwibGFiZWwiOiJCIiwidGV4dCI6IlBvYWNoaW5nIGFuZCB0aGUgaWxsZWdhbCB0cmFkZSBpbiB0aWdlciBwYXJ0cyB0byBtYWtlIHRyYWRpdGlvbmFsIG1lZGljaW5lcyIsImlzVHJ1ZSI6ZmFsc2V9LHsiaWQiOiJpaWhpdGczd3EiLCJsYWJlbCI6IkMiLCJ0ZXh0IjoiVGhlIGRlbWFuZCBmb3IgdGlnZXIgcGFydHMgbGVkIHRvIHRoZSBjcmVhdGlvbiBvZiB0aWdlciBicmVlZGluZyBmYXJtcyIsImlzVHJ1ZSI6ZmFsc2V9LHsiaWQiOiJ5bXRsZmNoY3EiLCJsYWJlbCI6IkQiLCJ0ZXh0IjoiSWxsZWdhbCBodW50IGZvciBjb21tZXJjaWFsIHB1cnBvc2VzIGFuZCBhbXVzaW5nIHBldHMiLCJpc1RydWUiOnRydWV9XSwiY29ycmVjdEluZGV4IjozfSx7ImlkIjoiNTRwOG04aTl6IiwidHlwZSI6InNpbmdsZSIsImNvbnRlbnRIVE1MIjoiV2hhdCBpcyB0aGUgdGFsayBtYWlubHkgYWJvdXQ/Iiwib3B0aW9ucyI6W3siaWQiOiJwaWxncDRzZ2YiLCJsYWJlbCI6IkEiLCJ0ZXh0IjoiVGhyZWF0cyBmYWNpbmcgdGlnZXJzLiIsImlzVHJ1ZSI6dHJ1ZX0seyJpZCI6InAxeGZhc3RvZCIsImxhYmVsIjoiQiIsInRleHQiOiJXYXlzIHRvIHByb3RlY3QgdGlnZXJzLiIsImlzVHJ1ZSI6ZmFsc2V9LHsiaWQiOiI3NXJjbHZpMXkiLCJsYWJlbCI6IkMiLCJ0ZXh0IjoiVGhlIHdvcmxkJ3MgdGlnZXIgcG9wdWxhdGlvbi4iLCJpc1RydWUiOmZhbHNlfSx7ImlkIjoiNWo5OHJzYWk5IiwibGFiZWwiOiJEIiwidGV4dCI6IkEgZGVjcmVhc2UgaW4gdGhlIHVzZSBvZiB0aWdlciBwYXJ0cy4iLCJpc1RydWUiOmZhbHNlfV0sImNvcnJlY3RJbmRleCI6MH1d");
+        
+        // --- BẮT ĐẦU: Xáo trộn ngẫu nhiên đáp án mỗi lần mở file ---
+        QUESTIONS.forEach(q => {
+            if (q.options && q.options.length > 0) {
+                const originalLabels = q.options.map(o => o.label);
+                
+                // Thuật toán xáo trộn Fisher-Yates
+                for (let i = q.options.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [q.options[i], q.options[j]] = [q.options[j], q.options[i]];
+                }
+                
+                // Gán lại nhãn (A,B,C,D...) theo đúng thứ tự hiển thị
+                let newCorrectIdx = -1;
+                q.options.forEach((opt, index) => {
+                    opt.label = originalLabels[index];
+                    if (q.type === 'single' && opt.isTrue) {
+                        newCorrectIdx = index;
+                    }
+                });
+                q.correctIndex = newCorrectIdx;
+            }
+        });
+        // --- KẾT THÚC: Xáo trộn ngẫu nhiên đáp án ---
+
+        const STORAGE_KEY = 'AZOTA_MEM_' + "15 Câu Nghe".replace(/[^a-zA-Z0-9]/g, '_');
+        
+        let state;
+        try {
+            state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { masteredIds: [], queueIds: [], currentIndex: 0, srs: {} };
+            // Nâng cấp lịch sử học từ bản cũ sang cấu trúc lặp ngắt quãng SuperMemo-2
+            if (!state.srs) {
+                state.srs = {};
+                (state.masteredIds || []).forEach(id => {
+                    state.srs[id] = { reps: 1, ease: 2.5, interval: 86400000, nextReview: Date.now() + 86400000 };
+                });
+            } else {
+                // Tự động migrate dữ liệu bản step cũ sang bản SM-2 mới
+                Object.keys(state.srs).forEach(id => {
+                    let item = state.srs[id];
+                    if (item.step !== undefined) {
+                        item.reps = item.step;
+                        item.ease = 2.5;
+                        const intervals = [12*3600000, 24*3600000, 3*24*3600000, 7*24*3600000, 15*24*3600000, 30*24*3600000];
+                        item.interval = intervals[Math.min(item.step, intervals.length - 1)] || 12*3600000;
+                        delete item.step;
+                    }
+                });
+            }
+        } catch(err) {
+            state = { masteredIds: [], queueIds: [], currentIndex: 0, srs: {} };
+        }
+        
+        let currentQuestion = null;
+        let isAnswered = false;
+        let currentHasFailed = false;
+
+        let focusables = [];
+        let focusIndex = -1;
+
+        // BIẾN CHO CHẾ ĐỘ TEST & CHUỘT
+        let isTestMode = false;
+        let testAnswers = {};
+        let testSubmitted = false;
+        let isMouseControlEnabled = true;
+
+        function saveState() { 
+             try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+             catch(err) {}
+        }
+
+        function toggleMode() {
+            isTestMode = !isTestMode;
+            const btn = document.getElementById('btnTestMode');
+            if (isTestMode) btn.classList.add('active');
+            else btn.classList.remove('active');
+            testAnswers = {};
+            testSubmitted = false;
+            initApp();
+        }
+
+        function toggleMouseControl() {
+            isMouseControlEnabled = !isMouseControlEnabled;
+            const btn = document.getElementById('btnMouse');
+            if (isMouseControlEnabled) btn.classList.add('active');
+            else btn.classList.remove('active');
+            drawFocus();
+        }
+
+        function toggleQContent(qId) {
+            const contentDiv = document.getElementById('q-content-' + qId);
+            const btn = document.getElementById('btn-toggle-' + qId);
+            if (!contentDiv || !btn) return;
+            if (contentDiv.style.display === 'none') {
+                contentDiv.style.display = 'block';
+                btn.innerText = 'Thu gọn ▲';
+            } else {
+                contentDiv.style.display = 'none';
+                btn.innerText = 'Mở rộng ▼';
+            }
+        }
+
+        function showVictory() {
+            document.getElementById('quizContainer').classList.add('hidden');
+            document.getElementById('victoryScreen').classList.remove('hidden');
+            document.getElementById('progressBar').style.width = '100%';
+            
+            let masteredCount = QUESTIONS.filter(q => state.srs[q.id] && state.srs[q.id].reps > 0).length;
+            document.getElementById('masteredDisplay').innerText = masteredCount;
+            
+            document.getElementById('actionPanel').classList.remove('show');
+
+            // Tính toán thời gian ôn tập tiếp theo
+            let minNext = Infinity;
+            QUESTIONS.forEach(q => {
+                if (state.srs[q.id] && state.srs[q.id].nextReview) {
+                    if (state.srs[q.id].nextReview < minNext) minNext = state.srs[q.id].nextReview;
+                } else {
+                    minNext = Date.now(); // Chưa học -> Cần học ngay
+                }
+            });
+
+            let nextReviewStr = "Chưa xác định";
+            if (minNext !== Infinity) {
+                let diffMs = minNext - Date.now();
+                if (diffMs <= 0) {
+                    nextReviewStr = "Ngay bây giờ (Tải lại trang)";
+                } else {
+                    let diffMins = Math.round(diffMs / 60000);
+                    let diffHours = Math.round(diffMs / 3600000);
+                    let diffDays = Math.round(diffMs / 86400000);
+                    
+                    let timeStr = "";
+                    if (diffMins < 60) timeStr = diffMins + " phút nữa";
+                    else if (diffHours < 24) timeStr = diffHours + " giờ nữa";
+                    else timeStr = diffDays + " ngày nữa";
+                    
+                    let dateObj = new Date(minNext);
+                    let h = dateObj.getHours().toString().padStart(2, '0');
+                    let m = dateObj.getMinutes().toString().padStart(2, '0');
+                    let d = dateObj.getDate().toString().padStart(2, '0');
+                    let mo = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+                    let y = dateObj.getFullYear();
+                    
+                    nextReviewStr = timeStr + " (Lúc " + h + ":" + m + " - " + d + "/" + mo + "/" + y + ")";
+                }
+            }
+            const reviewEl = document.getElementById('nextReviewTime');
+            if (reviewEl) reviewEl.innerText = nextReviewStr;
+        }
+
+        function initApp() {
+            if (QUESTIONS.length === 0) return;
+            document.getElementById('totalQuestionsDisplay').innerText = QUESTIONS.length;
+            
+            // Tính số câu đã học thuộc (nằm trong tiến trình lặp lại ngắt quãng Anki)
+            let masteredCount = QUESTIONS.filter(q => state.srs[q.id] && state.srs[q.id].reps > 0).length;
+            document.getElementById('masteredDisplay').innerText = masteredCount;
+            
+            // Xây dựng danh sách câu hỏi cần ôn trong ngày hôm nay (Hoặc chưa học)
+            if (state.queueIds.length === 0 || state.currentIndex >= state.queueIds.length || isTestMode) {
+                let dueQuestions = QUESTIONS.filter(q => !state.srs[q.id] || state.srs[q.id].nextReview <= Date.now());
+                
+                if (dueQuestions.length === 0 && !isTestMode) {
+                    showVictory();
+                    return;
+                }
+                
+                // Nếu Test Mode mà không có câu due, lấy hết câu hỏi để thi thử
+                if (dueQuestions.length === 0 && isTestMode) {
+                    dueQuestions = QUESTIONS;
+                }
+                
+                state.queueIds = dueQuestions.map(q => q.id).sort(() => Math.random() - 0.5);
+                state.currentIndex = 0;
+                if (!isTestMode) saveState();
+            }
+            render();
+        }
+
+        function buildQuestionHTML(q, index) {
+            let optionsHtml = '';
+            
+            if (q.type === 'tf') {
+                optionsHtml += '<div class="tf-compact">';
+                q.options.forEach((opt, idx) => {
+                    optionsHtml += `
+                        <div class="tf-row-c" id="tf-row-${q.id}-${idx}">
+                            <div class="tf-text-c">
+                                <span class="opt-label">${opt.label}</span>
+                                <div class="tf-text-content">${opt.text}</div>
+                            </div>
+                            <div class="tf-actions-c">
+                                <button onclick="handleTFSelect('${q.id}', ${idx}, true)" id="btn-${q.id}-${idx}-t" class="tf-btn-c">Đ</button>
+                                <button onclick="handleTFSelect('${q.id}', ${idx}, false)" id="btn-${q.id}-${idx}-f" class="tf-btn-c">S</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                optionsHtml += '</div>';
+            } else {
+                optionsHtml += '<div class="options-list">';
+                q.options.forEach((opt, idx) => {
+                    optionsHtml += `
+                        <button onclick="handleSelect('${q.id}', ${idx})" id="opt-${q.id}-${idx}" class="opt-btn">
+                            <span class="opt-label">${opt.label}.</span>
+                            <span class="opt-text">${opt.text}</span>
+                        </button>
+                    `;
+                });
+                optionsHtml += '</div>';
+            }
+
+            let qContentHtml = '';
+            let toggleBtnHtml = '';
+            if (q.type === 'tf') {
+                qContentHtml = `<div class="q-content" id="q-content-${q.id}" style="display: none;">${q.contentHTML}</div>`;
+                toggleBtnHtml = `<button onclick="toggleQContent('${q.id}')" id="btn-toggle-${q.id}" class="btn-toggle-content">Mở rộng câu hỏi ▼</button>`;
+            } else {
+                qContentHtml = `<div class="q-content" id="q-content-${q.id}">${q.contentHTML}</div>`;
+            }
+
+            return `
+                <div class="quiz-card">
+                    ${isTestMode ? `<div style="font-size: 14px; font-weight:bold; color:var(--primary); margin-bottom: 8px;">Câu ${index + 1}:</div>` : ''}
+                    ${(!isTestMode && q.type === 'tf') ? '<span class="q-type">CHỌN ĐÚNG / SAI CHO TỪNG Ý</span>' : ''}
+                    ${qContentHtml}
+                    ${toggleBtnHtml}
+                    ${optionsHtml}
+                </div>
+            `;
+        }
+
+        function render() {
+            isAnswered = false;
+            currentHasFailed = false;
+            
+            document.getElementById('actionPanel').classList.remove('show');
+            document.getElementById('nextBtn').classList.add('hidden');
+            
+            const container = document.getElementById('quizContainer');
+            container.classList.remove('fade-in');
+            void container.offsetWidth; 
+            container.classList.add('fade-in');
+
+            if (isTestMode) {
+                document.getElementById('quizStats').style.display = 'none';
+                document.getElementById('actionPanel').classList.add('show');
+                const feedback = document.getElementById('feedbackText');
+                feedback.className = 'feedback neutral';
+                feedback.innerHTML = `<div class="fb-icon">📝</div> <span>Chế độ thi thử (${state.queueIds.length} câu)</span>`;
+                
+                const nextBtn = document.getElementById('nextBtn');
+                nextBtn.innerText = 'NỘP BÀI';
+                nextBtn.classList.remove('hidden');
+                nextBtn.onclick = submitTest;
+
+                let html = '';
+                state.queueIds.forEach((qId, index) => {
+                    const q = QUESTIONS.find(x => x.id === qId);
+                    html += buildQuestionHTML(q, index);
+                });
+                container.innerHTML = html;
+            } else {
+                document.getElementById('quizStats').style.display = 'flex';
+                document.getElementById('currentIdxDisplay').innerText = state.currentIndex + 1;
+                document.getElementById('queueTotalDisplay').innerText = state.queueIds.length;
+                document.getElementById('progressBar').style.width = ((state.currentIndex / state.queueIds.length) * 100) + '%';
+                
+                const nextBtn = document.getElementById('nextBtn');
+                nextBtn.innerText = 'Tiếp tục ➔';
+                nextBtn.onclick = goNext;
+
+                const qId = state.queueIds[state.currentIndex];
+                currentQuestion = QUESTIONS.find(q => q.id === qId);
+                testAnswers[qId] = {}; // dùng cho Single Mode T/F
+                
+                container.innerHTML = buildQuestionHTML(currentQuestion, state.currentIndex);
+            }
+            
+            setTimeout(updateFocusables, 50);
+        }
+
+        function handleSelect(qId, idx) {
+            if (isTestMode) {
+                if (testSubmitted) return;
+                const q = QUESTIONS.find(x => x.id === qId);
+                q.options.forEach((_, i) => {
+                    document.getElementById(`opt-${qId}-${i}`).classList.remove('opt-selected');
+                });
+                document.getElementById(`opt-${qId}-${idx}`).classList.add('opt-selected');
+                testAnswers[qId] = idx;
+                updateFocusables();
+            } else {
+                if (isAnswered) return;
+                const q = currentQuestion;
+                const isCorrect = (idx === q.correctIndex);
+                const btn = document.getElementById(`opt-${qId}-${idx}`);
+                
+                if (isCorrect) {
+                    isAnswered = true;
+                    btn.classList.add('opt-correct', 'opt-disabled');
+                    q.options.forEach((_, i) => {
+                        if (i !== idx) document.getElementById(`opt-${qId}-${i}`).classList.add('opt-disabled');
+                    });
+                    showFeedback(true, !currentHasFailed);
+                } else {
+                    currentHasFailed = true;
+                    btn.classList.add('opt-wrong', 'opt-disabled');
+                    showFeedback(false);
+                }
+                updateFocusables();
+            }
+        }
+
+        function handleTFSelect(qId, optIdx, isTrueSelection) {
+            const q = QUESTIONS.find(x => x.id === qId);
+            
+            if (isTestMode) {
+                if (testSubmitted) return;
+                if (!testAnswers[qId]) testAnswers[qId] = {};
+                testAnswers[qId][optIdx] = isTrueSelection;
+                
+                const btnT = document.getElementById(`btn-${qId}-${optIdx}-t`);
+                const btnF = document.getElementById(`btn-${qId}-${optIdx}-f`);
+                btnT.classList.remove('selected-t');
+                btnF.classList.remove('selected-f');
+                if (isTrueSelection) btnT.classList.add('selected-t');
+                else btnF.classList.add('selected-f');
+            } else {
+                if (isAnswered) return;
+                if (!testAnswers[qId]) testAnswers[qId] = {};
+                // Bỏ qua nếu đã chọn ý này rồi
+                if (testAnswers[qId][optIdx] !== undefined) return;
+                
+                testAnswers[qId][optIdx] = isTrueSelection;
+                const opt = q.options[optIdx];
+                const isCorrect = (isTrueSelection === opt.isTrue);
+                
+                const btnT = document.getElementById(`btn-${qId}-${optIdx}-t`);
+                const btnF = document.getElementById(`btn-${qId}-${optIdx}-f`);
+                const row = document.getElementById(`tf-row-${qId}-${optIdx}`);
+                
+                btnT.disabled = true;
+                btnF.disabled = true;
+                
+                if (isCorrect) {
+                    if (isTrueSelection) btnT.classList.add('correct-ans');
+                    else btnF.classList.add('correct-ans');
+                    row.classList.add('correct');
+                } else {
+                    currentHasFailed = true;
+                    if (isTrueSelection) btnT.classList.add('wrong-ans');
+                    else btnF.classList.add('wrong-ans');
+                    row.classList.add('wrong');
+                }
+                
+                // Kiểm tra xem đã hoàn thành 4 ý chưa
+                if (Object.keys(testAnswers[qId]).length === q.options.length) {
+                    isAnswered = true;
+                    showFeedback(true, !currentHasFailed);
+                } else if (!isCorrect) {
+                    // Cảnh báo sai ngay lập tức
+                    const feedback = document.getElementById('feedbackText');
+                    feedback.className = 'feedback error';
+                    feedback.innerHTML = '<div class="fb-icon">✗</div> <span>Bạn bị sai ý này rồi! Hãy cẩn thận hơn.</span>';
+                    document.getElementById('actionPanel').classList.add('show');
+                }
+            }
+            updateFocusables();
+        }
+
+        function submitTest() {
+            if (testSubmitted) {
+                // Quay về hoặc làm lại
+                isTestMode = false;
+                const btn = document.getElementById('btnTestMode');
+                btn.classList.remove('active');
+                initApp();
+                return;
+            }
+            
+            testSubmitted = true;
+            let correctCount = 0;
+            let totalCount = state.queueIds.length;
+            
+            state.queueIds.forEach(qId => {
+                const q = QUESTIONS.find(x => x.id === qId);
+                let isPerfect = true;
+                
+                if (!state.srs) state.srs = {};
+                if (!state.srs[q.id]) state.srs[q.id] = { reps: 0, ease: 2.5, interval: 0, nextReview: 0 };
+                let qSrs = state.srs[q.id];
+                
+                if (q.type === 'single') {
+                    const userAns = testAnswers[qId];
+                    if (userAns === q.correctIndex) {
+                        correctCount++;
+                        document.getElementById(`opt-${qId}-${userAns}`).classList.add('opt-correct');
+                    } else {
+                        isPerfect = false;
+                        if (userAns !== undefined) {
+                            document.getElementById(`opt-${qId}-${userAns}`).classList.add('opt-wrong');
+                        }
+                        const correctOptBtn = document.getElementById(`opt-${qId}-${q.correctIndex}`);
+                        if (correctOptBtn) correctOptBtn.classList.add('opt-correct');
+                    }
+                } else if (q.type === 'tf') {
+                    const userAnsMap = testAnswers[qId] || {};
+                    let qCorrect = true;
+                    q.options.forEach((opt, idx) => {
+                        const uAns = userAnsMap[idx];
+                        const btnT = document.getElementById(`btn-${qId}-${idx}-t`);
+                        const btnF = document.getElementById(`btn-${qId}-${idx}-f`);
+                        const row = document.getElementById(`tf-row-${qId}-${idx}`);
+                        btnT.disabled = true; btnF.disabled = true;
+                        
+                        if (uAns === opt.isTrue) {
+                            if (uAns === true) btnT.classList.add('correct-ans');
+                            else if (uAns === false) btnF.classList.add('correct-ans');
+                            row.classList.add('correct');
+                        } else {
+                            qCorrect = false;
+                            isPerfect = false;
+                            if (uAns === true) btnT.classList.add('wrong-ans');
+                            else if (uAns === false) btnF.classList.add('wrong-ans');
+                            row.classList.add('wrong');
+                            
+                            // Highlight đúng
+                            if (opt.isTrue) btnT.classList.add('correct-ans');
+                            else btnF.classList.add('correct-ans');
+                        }
+                    });
+                    if (qCorrect) correctCount++;
+                }
+                
+                // SM-2 Logic cho Test Mode
+                if (isPerfect) {
+                    if (qSrs.reps === 0) qSrs.interval = 12 * 3600000;
+                    else if (qSrs.reps === 1) qSrs.interval = 3 * 24 * 3600000;
+                    else qSrs.interval = Math.round(qSrs.interval * qSrs.ease);
+                    qSrs.reps += 1;
+                    qSrs.ease = Math.max(1.3, qSrs.ease + 0.1);
+                    qSrs.nextReview = Date.now() + qSrs.interval;
+                } else {
+                    qSrs.reps = 0;
+                    qSrs.interval = 5 * 60000;
+                    qSrs.ease = Math.max(1.3, qSrs.ease - 0.2);
+                    qSrs.nextReview = Date.now() + qSrs.interval;
+                }
+            });
+            
+            saveState();
+            
+            let masteredCount = QUESTIONS.filter(q => state.srs[q.id] && state.srs[q.id].reps > 0).length;
+            document.getElementById('masteredDisplay').innerText = masteredCount;
+            
+            const feedback = document.getElementById('feedbackText');
+            feedback.className = 'feedback success';
+            feedback.innerHTML = `<div class="fb-icon">🏆</div> <span>Hoàn thành! Đúng ${correctCount}/${totalCount} câu.</span>`;
+            
+            const nextBtn = document.getElementById('nextBtn');
+            nextBtn.innerText = 'Tiếp tục ôn tập ➔';
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showFeedback(isCorrectFinal, isPerfect = false) {
+            const feedback = document.getElementById('feedbackText');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (isCorrectFinal) {
+                if (!state.srs) state.srs = {};
+                if (!state.srs[currentQuestion.id]) state.srs[currentQuestion.id] = { reps: 0, ease: 2.5, interval: 0, nextReview: 0 };
+                
+                let qSrs = state.srs[currentQuestion.id];
+                
+                // THUẬT TOÁN ANKI (SUPERMEMO-2 NÂNG CẤP): Đánh giá quá trình ôn tập
+                if (isPerfect) {
+                    if (qSrs.reps === 0) {
+                        qSrs.interval = 12 * 3600000; // 12 tiếng
+                    } else if (qSrs.reps === 1) {
+                        qSrs.interval = 3 * 24 * 3600000; // 3 ngày
+                    } else {
+                        qSrs.interval = Math.round(qSrs.interval * qSrs.ease); // Nhân với hệ số độ dễ
+                    }
+                    qSrs.reps += 1;
+                    qSrs.ease = Math.max(1.3, qSrs.ease + 0.1); // Tăng hệ số dễ
+                    qSrs.nextReview = Date.now() + qSrs.interval;
+                } else {
+                    // Nếu trả lời sai/nhầm, reset tiến trình và bắt ôn lại sau 5 phút, giảm ease
+                    qSrs.reps = 0;
+                    qSrs.interval = 5 * 60000; // 5 phút
+                    qSrs.ease = Math.max(1.3, qSrs.ease - 0.2); // Phạt độ khó
+                    qSrs.nextReview = Date.now() + qSrs.interval;
+                }
+                
+                let masteredCount = QUESTIONS.filter(q => state.srs[q.id] && state.srs[q.id].reps > 0).length;
+                document.getElementById('masteredDisplay').innerText = masteredCount;
+                saveState();
+                
+                feedback.className = 'feedback success';
+                feedback.innerHTML = '<div class="fb-icon">✓</div> <span>Tuyệt vời, Đúng rồi!</span>';
+                
+                nextBtn.classList.remove('hidden');
+                document.getElementById('actionPanel').classList.add('show');
+                nextBtn.focus();
+            } else {
+                feedback.className = 'feedback error';
+                feedback.innerHTML = '<div class="fb-icon">✗</div> <span>Sai rồi, Hãy xem lại kĩ nhé!</span>';
+                
+                nextBtn.classList.add('hidden');
+                document.getElementById('actionPanel').classList.add('show');
+            }
+        }
+
+        function goNext() {
+            if (!isAnswered) return;
+            state.currentIndex++;
+            saveState();
+            initApp();
+        }
+
+        function resetData() {
+            if(confirm('Xóa bộ nhớ và bắt đầu lại từ đầu?')) {
+                state = { masteredIds: [], queueIds: [], currentIndex: 0, srs: {} };
+                saveState();
+                document.getElementById('victoryScreen').classList.add('hidden');
+                document.getElementById('quizContainer').classList.remove('hidden');
+                initApp();
+            }
+        }
+
+        function triggerSelectLogic() {
+            if (isTestMode) {
+                if (!testSubmitted) {
+                    if (focusIndex >= 0 && focusIndex < focusables.length) {
+                        focusables[focusIndex].click();
+                    }
+                } else {
+                    submitTest();
+                }
+            } else {
+                if (isAnswered) {
+                    const nextBtn = document.getElementById('nextBtn');
+                    if (!nextBtn.classList.contains('hidden')) goNext();
+                } else {
+                    if (focusIndex >= 0 && focusIndex < focusables.length) {
+                        focusables[focusIndex].click();
+                    }
+                }
+            }
+        }
+
+        // KHẮC PHỤC CHUỘT PHẢI = NÚT BACK TRÊN ĐIỆN THOẠI BẰNG HISTORY API TRONG FULLSCREEN
+        function toggleFS() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().then(() => {
+                    // Đẩy trạng thái ảo vào lịch sử để chặn nút Back
+                    history.pushState({fs: true}, '', location.href);
+                }).catch(err => console.log(err));
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        }
+
+        // BẮT SỰ KIỆN KHI CHUYỂN ĐỔI CHẾ ĐỘ TOÀN MÀN HÌNH ĐỂ THAY ĐỔI GIAO DIỆN
+        document.addEventListener('fullscreenchange', () => {
+            const fsBtn = document.getElementById('btnFs');
+            if (document.fullscreenElement) {
+                document.body.classList.add('is-fullscreen');
+                if(fsBtn) { fsBtn.innerHTML = svgMin; fsBtn.title = 'Thoát toàn màn hình'; }
+            } else {
+                document.body.classList.remove('is-fullscreen');
+                if(fsBtn) { fsBtn.innerHTML = svgMax; fsBtn.title = 'Toàn màn hình'; }
+            }
+        });
+
+        // Lắng nghe sự kiện người dùng bấm phím Back (Hoặc chuột phải map với nút Back trên OPPO)
+        window.addEventListener('popstate', (e) => {
+            if (document.fullscreenElement) {
+                // Nhồi lại trạng thái để người dùng không bị văng ra khỏi trang
+                history.pushState({fs: true}, '', location.href);
+                // Kích hoạt chức năng click chuột phải
+                if (isMouseControlEnabled) triggerSelectLogic();
+            }
+        });
+
+        function updateFocusables() {
+            focusables = Array.from(document.querySelectorAll('.opt-btn:not(.opt-disabled), .tf-btn-c:not(:disabled)'));
+            focusIndex = focusables.length > 0 ? 0 : -1;
+            drawFocus();
+        }
+
+        function drawFocus() {
+            document.querySelectorAll('.focused-item').forEach(el => el.classList.remove('focused-item'));
+            
+            if (isTestMode || !isMouseControlEnabled) return;
+
+            if (focusIndex >= 0 && focusIndex < focusables.length) {
+                const el = focusables[focusIndex];
+                el.classList.add('focused-item');
+                // Tính năng TỰ ĐỘNG CUỘN xuống khu vực có chứa câu trả lời
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Tắt menu chuột phải mặc định của trình duyệt
+        document.addEventListener('contextmenu', e => {
+            if (isMouseControlEnabled) e.preventDefault();
+        });
+
+        let pressTimer;
+        let isLongPress = false;
+        let pressStartX, pressStartY;
+
+        function handlePointerDown(x, y) {
+            if (!isMouseControlEnabled) return;
+            isLongPress = false;
+            pressStartX = x;
+            pressStartY = y;
+            pressTimer = setTimeout(() => {
+                isLongPress = true;
+                triggerSelectLogic();
+            }, 400); 
+        }
+
+        function handlePointerUp() {
+            if (!isMouseControlEnabled) return;
+            clearTimeout(pressTimer);
+            if (!isLongPress) {
+                if (!isTestMode && isAnswered) return;
+                if (focusables.length > 0) {
+                    focusIndex = (focusIndex + 1) % focusables.length;
+                    drawFocus();
+                }
+            }
+        }
+
+        function handlePointerMove(x, y) {
+            if (pressTimer && (Math.abs(x - pressStartX) > 10 || Math.abs(y - pressStartY) > 10)) {
+                clearTimeout(pressTimer);
+            }
+        }
+
+        document.addEventListener('mousedown', e => {
+            if (!isMouseControlEnabled) return;
+            if (e.target.closest('button')) return; 
+            
+            if (e.button === 0) {
+                handlePointerDown(e.clientX, e.clientY);
+            } else if (e.button === 2) {
+                e.preventDefault();
+            }
+        });
+
+        document.addEventListener('mouseup', e => {
+            if (!isMouseControlEnabled || e.target.closest('button') || e.button !== 0) return;
+            handlePointerUp();
+        });
+
+        document.addEventListener('mousemove', e => {
+            if (!isMouseControlEnabled || e.buttons !== 1) return;
+            handlePointerMove(e.clientX, e.clientY);
+        });
+
+        document.addEventListener('touchstart', e => {
+            if (!isMouseControlEnabled || e.target.closest('button')) return;
+            handlePointerDown(e.touches[0].clientX, e.touches[0].clientY);
+        });
+
+        document.addEventListener('touchend', e => {
+            if (!isMouseControlEnabled || e.target.closest('button')) return;
+            handlePointerUp();
+        });
+
+        document.addEventListener('touchmove', e => {
+            if (!isMouseControlEnabled) return;
+            handlePointerMove(e.touches[0].clientX, e.touches[0].clientY);
+        });
+
+        document.addEventListener('keydown', e => { if(e.key === 'Enter' && (!isTestMode && isAnswered)) goNext(); });
+
+        initApp();
+    </script>
+</body>
+</html>
